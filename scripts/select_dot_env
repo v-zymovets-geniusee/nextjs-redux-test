@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+if [[ $SITE_BUCKET = "staging-drum-business-app" ]]; then
+  cp -v .env_staging .env
+elif [[ $SITE_BUCKET = "drum-prod-business-app" ]]; then
+  cp -v .env_prod .env
+else
+  cp -v .env_local .env
+fi

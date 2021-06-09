@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+
+declare -r SCRIPT_NAME="${BASH_ARGV0##*/}"
+
+if [[ $SITE_BUCKET = "staging-drum-business-app" ]]; then
+  mkdir -p public/.well-known
+  cp -v stag-apple-app-site-association.json public/.well-known/apple-app-site-association
+elif [[ $SITE_BUCKET = "drum-prod-business-web" ]]; then
+  mkdir -p public/.well-known
+  cp -v prod-apple-app-site-association.json public/.well-known/apple-app-site-association
+else
+  echo "$SCRIPT_NAME: Bad SITE_BUCKET = $SITE_BUCKET"
+fi

@@ -1,0 +1,16 @@
+mutation SubmitPotentialDrummerEmail($input: SubmitPotentialDrummerEmailInput!) {
+  submitPotentialDrummerEmail(input: $input) {
+    ... on SubmitPotentialDrummerEmailResponse {
+      success
+      didCreatePotentialDrummerRecord
+      realDrummerExists
+      drummerId
+    }
+    ... on ErrorResponse {
+      error
+      code
+      message
+      details
+    }
+  }
+}

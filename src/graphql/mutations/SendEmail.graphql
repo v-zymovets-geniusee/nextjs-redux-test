@@ -1,0 +1,13 @@
+mutation SendEmail($input: SendEmailInput!) {
+  sendEmail(input: $input) {
+    ... on SendEmailResponse {
+      success
+    }
+    ... on ErrorResponse {
+      error
+      code
+      message
+      details
+    }
+  }
+}

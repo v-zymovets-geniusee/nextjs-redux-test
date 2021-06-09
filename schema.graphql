@@ -1,0 +1,323 @@
+enum CommissionType {
+  PAYDRUM
+  FIXED
+  PERCENTAGE
+}
+
+enum RedeemType {
+  REMOTE
+  SCAN
+  REMOTE_SCAN
+}
+
+enum LimitRedemptionType {
+  BUDGET
+  REDEMPTION
+  UNLIMITED
+}
+
+type LimitRedemption {
+  type: LimitRedemptionType
+  value: Float
+}
+
+enum ImageStyleName {
+  cropped
+  large
+  medium
+  original
+  originalBuyer
+  small
+  square
+}
+
+type ImageStyle {
+  name: ImageStyleName
+  path: String
+}
+
+enum MediaObjectType {
+  VIDEO
+  IMAGE
+}
+
+type MediaObject {
+  type: MediaObjectType
+  url: String
+  styles: [ImageStyle]
+}
+
+enum IntegrationType {
+  shopify
+  standard
+}
+
+type Business {
+  id: ID!
+  businessName: String
+  coverImage: MediaObject
+  email: String
+  imagesS3: [MediaObject!]
+  integrationType: IntegrationType
+}
+
+type DrumRedemption {
+  payDrum: Float
+  limitRedemption: LimitRedemption
+  loyaltyOffer: Int
+  isMultipleTimes: Boolean
+  redeemType: RedeemType
+  payDrummer: Float
+  commissionType: CommissionType
+  isRequireMinimumPurchaseAmount: Boolean
+  buyerSpendPurchaseAmount: Float
+}
+
+type DrummerEducationLinks {
+  title: String!
+  url: String!
+}
+
+type DrummerNote {
+  description: String
+  files: [File!]
+}
+
+type File {
+  key: String!
+  domain: String!
+}
+
+enum RewardActionType {
+  navigate_to_specific_page
+  complete_a_purchase
+}
+
+type Offer {
+  id: String
+  title: String
+  description: String
+  offerDlpUrl: String
+  coverPhoto: MediaObject
+  drumRedemption: DrumRedemption
+  photos: [MediaObject!]
+  drummerEducationLinks: [DrummerEducationLinks!]
+  endedAt: String
+  drummerNote: DrummerNote
+  rewardActionType: RewardActionType
+}
+
+enum ReferralPageStateConfigPageStyleBackgroundType {
+  color
+  image
+}
+
+type ReferralPageStateConfigPageStyleBackground {
+  backgroundType: ReferralPageStateConfigPageStyleBackgroundType!
+  backgroundImage: String
+  backgroundColor: String
+  backgroundImageNoncompiled: String
+}
+
+type ReferralPageStateConfigPageStyle {
+  buttonColor: String!
+  textColor: String!
+  cornersRadius: Int!
+  fontName: String!
+  background: ReferralPageStateConfigPageStyleBackground!
+}
+
+type ReferralPageStateConfig {
+  title: String!
+  body: String!
+}
+
+type ReferralPageJoinState {
+  compiledConfig: ReferralPageStateConfig!
+  config: ReferralPageStateConfig!
+  offers: [Offer]
+}
+
+type ReferralPageShareState {
+  compiledConfig: ReferralPageStateConfig!
+  config: ReferralPageStateConfig!
+}
+
+type ReferralPageThankYouState {
+  compiledConfig: ReferralPageStateConfig!
+  config: ReferralPageStateConfig!
+}
+
+type ReferralPageStates {
+  join: ReferralPageJoinState!
+  share: ReferralPageShareState!
+  thankYou: ReferralPageThankYouState!
+}
+
+type ReferralPageShopifyPageConfig {
+  pageId: String
+  shopAddress: String
+  title: String!
+  body: String!
+  userDidCreateTheShopifyPage: Boolean!
+  isHidden: Boolean!
+  pageUrl: String
+  adminPageUrl: String
+  syncedOn: String
+}
+
+type ReferralPage {
+  id: String!
+  webId: String!
+  url: String!
+  iframeUrl: String!
+  business: Business!
+  states: ReferralPageStates!
+  pageStyle: ReferralPageStateConfigPageStyle!
+  shopifyPageConfig: ReferralPageShopifyPageConfig!
+  userDidUpdateThePage: Boolean!
+  shareAppLink: String!
+}
+
+type ErrorResponseDetailField {
+  key: String!
+  value: String!
+}
+
+type ErrorResponse {
+  error: Boolean
+  code: String
+  message: String
+  details: String
+  detailFields: [ErrorResponseDetailField!]
+}
+
+union ReferralPageResult = ReferralPage | ErrorResponse
+
+input GetReferralPageInput {
+  referralPageWebId: String!
+}
+
+input SubmitPotentialDrummerEmailInput {
+  email: String!
+  referralPageWebId: String!
+}
+
+enum CustomerStatus {
+  notInvited
+  pending
+  subscribed
+  unsubscribed
+}
+
+type CustomerTag {
+  id: String
+  name: String
+  value: String
+}
+
+enum CustomerSource {
+  csvUpload
+  manualAdd
+  shopify
+  referralPage
+}
+
+type Customer {
+  id: ID!
+  businessId: String
+  firstName: String
+  lastName: String
+  email: String
+  status: CustomerStatus
+  phone: String
+  address: String
+  address2: String
+  jobId: ID
+  createdAt: String
+  updatedAt: String
+  lastContacted: String
+  tags: [CustomerTag]
+  referrals: Int
+  totalReward: Float
+  totalSales: Float
+  source: CustomerSource
+}
+
+enum CustomerNotAddedReasonCode {
+  duplicateEmail
+  noRequiredFields
+}
+
+type CustomerNotAddedReason {
+  code: CustomerNotAddedReasonCode
+  badRecord: Customer
+}
+
+type AddCustomersResult {
+  total: Int
+  items: [Customer]
+
+  notAdded: Int
+  notAddedReasons: [CustomerNotAddedReason]
+}
+
+type SubmitPotentialDrummerEmailResponse {
+  success: Boolean!
+  didCreatePotentialDrummerRecord: Boolean!
+  potentialDrummerWasCreatedWithinNSeconds: Boolean!
+  nSeconds: Int!
+  realDrummerExists: Boolean!
+  drummerId: String!
+  addCustomersResult: AddCustomersResult
+}
+
+union SubmitPotentialDrummerEmailResult = SubmitPotentialDrummerEmailResponse | ErrorResponse
+
+input OfferInput {
+  id: String!
+  title: String!
+}
+
+input CreateSharingLinkInput {
+  email: String!
+  referralPageWebId: String!
+  offers: [OfferInput!]
+}
+
+type CreateSharingLinkResponse {
+  success: Boolean!
+  didCreatePotentialDrummerRecord: Boolean!
+  realDrummerExists: Boolean!
+  url: String!
+}
+
+union CreateSharingLinkResult = CreateSharingLinkResponse | ErrorResponse
+
+input SendEmailInput {
+  from: String
+  to: String!
+  offerIds: [String!]!
+  identityId: String
+  link: String
+  emailBody: String
+  isRemind: Boolean
+}
+
+type SendEmailResponse {
+  success: Boolean!
+}
+
+union SendEmailResult = SendEmailResponse | ErrorResponse
+
+type Query {
+  referralPage(input: GetReferralPageInput!): ReferralPageResult
+}
+
+type Mutation {
+  submitPotentialDrummerEmail(
+    input: SubmitPotentialDrummerEmailInput!
+  ): SubmitPotentialDrummerEmailResult!
+  createSharingLinkFromReferralPage(input: CreateSharingLinkInput!): CreateSharingLinkResult!
+  sendEmail(input: SendEmailInput): SendEmailResult!
+}

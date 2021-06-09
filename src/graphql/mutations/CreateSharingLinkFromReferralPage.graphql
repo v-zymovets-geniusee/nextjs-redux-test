@@ -1,0 +1,14 @@
+mutation CreateSharingLinkFromReferralPage($input: CreateSharingLinkInput!) {
+  createSharingLinkFromReferralPage(input: $input) {
+    ... on CreateSharingLinkResponse {
+      success
+      url
+    }
+    ... on ErrorResponse {
+      error
+      code
+      message
+      details
+    }
+  }
+}

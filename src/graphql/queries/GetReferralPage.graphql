@@ -1,0 +1,105 @@
+query GetReferralPage($input: GetReferralPageInput!) {
+  referralPage(input: $input) {
+    ... on ReferralPage {
+      url
+      shareAppLink
+      business {
+        id
+        businessName
+        imagesS3 {
+          type
+          url
+          styles {
+            name
+            path
+          }
+        }
+      }
+      states {
+        join {
+          config {
+            title
+            body
+          }
+          offers {
+            id
+            title
+            description
+            offerDlpUrl
+            coverPhoto {
+              type
+              url
+              styles {
+                name
+                path
+              }
+            }
+            photos {
+              styles {
+                name
+                path
+              }
+            }
+            drumRedemption {
+              commissionType
+              payDrum
+              isRequireMinimumPurchaseAmount
+              limitRedemption {
+                type
+                value
+              }
+              buyerSpendPurchaseAmount
+            }
+            drummerNote {
+              description
+            }
+            drummerEducationLinks {
+              title
+              url
+            }
+            endedAt
+          }
+        }
+        share {
+          config {
+            title
+            body
+          }
+        }
+        thankYou {
+          config {
+            title
+            body
+          }
+        }
+      }
+      pageStyle {
+        buttonColor
+        textColor
+        cornersRadius
+        fontName
+        background {
+          backgroundType
+          backgroundImage
+          backgroundColor
+        }
+      }
+      userDidUpdateThePage
+      shopifyPageConfig {
+        pageId
+        shopAddress
+        title
+        isHidden
+        userDidCreateTheShopifyPage
+        pageUrl
+        adminPageUrl
+      }
+    }
+    ... on ErrorResponse {
+      error
+      code
+      message
+      details
+    }
+  }
+}
