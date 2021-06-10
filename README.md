@@ -1,4 +1,4 @@
-# Redux example
+# Next.js example
 This is an example of next.js integration with apollo, redux and styled-components
 
 ## Deploy
